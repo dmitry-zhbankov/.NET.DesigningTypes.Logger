@@ -27,25 +27,25 @@ namespace Logger
 
         public override void Error(string message)
         {
-            streamWriter.WriteLine(message);
+            streamWriter.WriteLine($"Error: {message}");
             streamWriter.Flush();
         }
 
         public override void Error(Exception ex)
         {
-            streamWriter.WriteLine(ex.Message);
+            streamWriter.WriteLine($"Error exception: {ex.Message}");
             streamWriter.Flush();
         }
 
         public override void Info(string message)
         {
-            streamWriter.WriteLine(message);
+            streamWriter.WriteLine($"Info: {message}");
             streamWriter.Flush();
         }
 
         public override void Warning(string message)
         {
-            streamWriter.WriteLine(message);
+            streamWriter.WriteLine($"Warning: {message}");
             streamWriter.Flush();
         }
 

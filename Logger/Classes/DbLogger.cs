@@ -48,7 +48,7 @@ namespace Logger
         {
             if (instance != null)
             {
-                var sqlExpression = $"INSERT INTO Logs(Content, Time) VALUES('Error: {ex.Message}', datetime('now','localtime'))";
+                var sqlExpression = $"INSERT INTO Logs(Content, Time) VALUES('Error exception: {ex.Message}', datetime('now','localtime'))";
                 var command = new SqliteCommand(sqlExpression, connection);
                 command.ExecuteNonQuery();
                 command.Dispose();
@@ -59,7 +59,7 @@ namespace Logger
         {
             if (instance != null)
             {
-                var sqlExpression = $"INSERT INTO Logs(Content, Time) VALUES('Error: {message}', datetime('now','localtime'))";
+                var sqlExpression = $"INSERT INTO Logs(Content, Time) VALUES('Info: {message}', datetime('now','localtime'))";
                 var command = new SqliteCommand(sqlExpression, connection);
                 command.ExecuteNonQuery();
                 command.Dispose();
@@ -70,7 +70,7 @@ namespace Logger
         {
             if (instance != null)
             {
-                var sqlExpression = $"INSERT INTO Logs(Content, Time) VALUES('Error: {message}', datetime('now','localtime'))";
+                var sqlExpression = $"INSERT INTO Logs(Content, Time) VALUES('Warning: {message}', datetime('now','localtime'))";
                 var command = new SqliteCommand(sqlExpression, connection);
                 command.ExecuteNonQuery();
                 command.Dispose();

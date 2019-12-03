@@ -13,17 +13,17 @@ namespace Logger
 
         public virtual void Error(Exception ex)
         {
-            Console.WriteLine($"Log {DateTime.Now:s} Error: {ex.Message}");
+            Console.WriteLine($"Log {DateTime.Now:s} Error exception: {ex.Message}");
         }
 
         public virtual void Info(string message)
         {
-            Console.WriteLine($"Log {DateTime.Now:s} Error: {message}");
+            Console.WriteLine($"Log {DateTime.Now:s} Info: {message}");
         }
 
         public virtual void Warning(string message)
         {
-            Console.WriteLine($"Log {DateTime.Now:s} Error: {message}");
+            Console.WriteLine($"Log {DateTime.Now:s} Warning: {message}");
         }
 
         public void Dispose()
