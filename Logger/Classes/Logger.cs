@@ -1,29 +1,49 @@
 ﻿using System;
+using System.Collections.Generic;
 
-namespace Logger
+namespace Logger.Classes
 {
     public class Logger : ILogger, IDisposable
     {
-        private bool disposed = false;
+        public List<ILogger> Loggers { get; set; }
+        bool disposed = false;
 
-        public virtual void Error(string message)
+        public Logger()
         {
-            Console.WriteLine($"Log {DateTime.Now:s} Error: {message}");
+            Loggers = new List<ILogger>();
+            Loggers.Add(new ConsoleLogger());
         }
 
-        public virtual void Error(Exception ex)
+        public void Error(string message)
         {
-            Console.WriteLine($"Log {DateTime.Now:s} Error exception: {ex.Message}");
+            foreach (var item in Loggers)
+            {
+                item?.Error(message);
+            }
         }
 
-        public virtual void Info(string message)
+        public void Error(Exception ex)
         {
-            Console.WriteLine($"Log {DateTime.Now:s} Info: {message}");
+            foreach (var item in Loggers)
+            {
+                item?.Error(ex);
+            }
         }
 
-        public virtual void Warning(string message)
+        public void Info(string message)
         {
-            Console.WriteLine($"Log {DateTime.Now:s} Warning: {message}");
+            foreach (var item in Loggers)
+            {
+                item?.Info(message);
+            }
+        }
+
+        public void Warning(string message)
+        {
+            foreach (var item in Loggers)
+            {
+                item?.Warning(message);
+            }
         }
 
         public void Dispose()
@@ -32,19 +52,24 @@ namespace Logger
             GC.SuppressFinalize(this);
         }
 
-        protected virtual void Dispose(bool disposing)
+        protected void Dispose(bool disposing)
         {
-            if (!disposed)
+            Console.WriteLine("BaseLogger disposer");
+            if (disposed)
+                return;
+            if (disposing)
             {
-                if (disposing)
-                {
-                }
-                disposed = true;
             }
+            foreach (var item in Loggers)
+            {
+                (item as IDisposable)?.Dispose();
+            }
+            disposed = true;
         }
 
         ~Logger()
         {
+            Console.WriteLine("BaseLogger destructor");
             Dispose(false);
         }
     }

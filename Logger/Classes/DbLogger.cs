@@ -3,7 +3,7 @@ using System;
 
 namespace Logger
 {
-    class DbLogger : Logger
+    class DbLogger : ILogger, IDisposable
     {
         private static DbLogger instance;
         private bool disposed = false;
@@ -33,66 +33,62 @@ namespace Logger
             return instance;
         }
 
-        public override void Error(string message)
+        public void Error(string message)
         {
-            if (instance != null)
-            {
-                var sqlExpression = $"INSERT INTO Logs(Content, Time) VALUES('Error: {message}', datetime('now','localtime'))";
-                var command = new SqliteCommand(sqlExpression, connection);
-                command.ExecuteNonQuery();
-                command.Dispose();
-            }
+            var sqlExpression = $"INSERT INTO Logs(Content, Time) VALUES('Error: {message}', datetime('now','localtime'))";
+            var command = new SqliteCommand(sqlExpression, connection);
+            command.ExecuteNonQuery();
+            command.Dispose();
         }
 
-        public override void Error(Exception ex)
+        public void Error(Exception ex)
         {
-            if (instance != null)
-            {
-                var sqlExpression = $"INSERT INTO Logs(Content, Time) VALUES('Error exception: {ex.Message}', datetime('now','localtime'))";
-                var command = new SqliteCommand(sqlExpression, connection);
-                command.ExecuteNonQuery();
-                command.Dispose();
-            }
+            var sqlExpression = $"INSERT INTO Logs(Content, Time) VALUES('Error exception: {ex?.Message}', datetime('now','localtime'))";
+            var command = new SqliteCommand(sqlExpression, connection);
+            command.ExecuteNonQuery();
+            command.Dispose();
         }
 
-        public override void Info(string message)
+        public void Info(string message)
         {
-            if (instance != null)
-            {
-                var sqlExpression = $"INSERT INTO Logs(Content, Time) VALUES('Info: {message}', datetime('now','localtime'))";
-                var command = new SqliteCommand(sqlExpression, connection);
-                command.ExecuteNonQuery();
-                command.Dispose();
-            }
+            var sqlExpression = $"INSERT INTO Logs(Content, Time) VALUES('Info: {message}', datetime('now','localtime'))";
+            var command = new SqliteCommand(sqlExpression, connection);
+            command.ExecuteNonQuery();
+            command.Dispose();
         }
 
-        public override void Warning(string message)
+        public void Warning(string message)
         {
-            if (instance != null)
-            {
-                var sqlExpression = $"INSERT INTO Logs(Content, Time) VALUES('Warning: {message}', datetime('now','localtime'))";
-                var command = new SqliteCommand(sqlExpression, connection);
-                command.ExecuteNonQuery();
-                command.Dispose();
-            }
+            var sqlExpression = $"INSERT INTO Logs(Content, Time) VALUES('Warning: {message}', datetime('now','localtime'))";
+            var command = new SqliteCommand(sqlExpression, connection);
+            command.ExecuteNonQuery();
+            command.Dispose();
         }
 
-        protected override void Dispose(bool disposing)
+        public void Dispose()
         {
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+
+        protected void Dispose(bool disposing)
+        {
+            Console.WriteLine("DbLogger disposer");
             if (!disposed)
             {
                 if (disposing)
                 {
                 }
+                instance = null;
                 connection?.Close();
                 connection?.Dispose();
                 disposed = true;
-                Console.WriteLine("Object has disposed");
             }
         }
 
         ~DbLogger()
         {
+            Console.WriteLine("DbLogger destructor");
             Dispose(false);
         }
     }

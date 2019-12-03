@@ -3,7 +3,7 @@ using System.IO;
 
 namespace Logger
 {
-    public class FileLogger : Logger
+    public class FileLogger : ILogger, IDisposable
     {
         StreamWriter streamWriter;
         private bool disposed = false;
@@ -25,37 +25,45 @@ namespace Logger
             return instance;
         }
 
-        public override void Error(string message)
+        public void Error(string message)
         {
             streamWriter.WriteLine($"Error: {message}");
             streamWriter.Flush();
         }
 
-        public override void Error(Exception ex)
+        public void Error(Exception ex)
         {
-            streamWriter.WriteLine($"Error exception: {ex.Message}");
+            streamWriter.WriteLine($"Error exception: {ex?.Message}");
             streamWriter.Flush();
         }
 
-        public override void Info(string message)
+        public void Info(string message)
         {
             streamWriter.WriteLine($"Info: {message}");
             streamWriter.Flush();
         }
 
-        public override void Warning(string message)
+        public void Warning(string message)
         {
             streamWriter.WriteLine($"Warning: {message}");
             streamWriter.Flush();
         }
 
-        protected override void Dispose(bool disposing)
+        public void Dispose()
         {
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+
+        protected void Dispose(bool disposing)
+        {
+            Console.WriteLine("FileLogger disposer");
             if (!disposed)
             {
                 if (disposing)
                 {
                 }
+                instance = null;
                 streamWriter?.Close();
                 streamWriter?.Dispose();
                 disposed = true;
@@ -64,6 +72,7 @@ namespace Logger
 
         ~FileLogger()
         {
+            Console.WriteLine("FileLogger destructor");
             Dispose(false);
         }
     }
